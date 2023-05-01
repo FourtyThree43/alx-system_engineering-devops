@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# This script displays the content of the current directory in a list format,
+# showing only the part of the name after the first dash
+
+for files in *
+do
+  if [ -f "$files" ] && [[ "$files" != .* ]]
+  then
+    basename=${files#*-}
+    echo "$basename"
+  fi
+done
