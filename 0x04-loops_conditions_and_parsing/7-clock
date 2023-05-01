@@ -5,9 +5,13 @@ hours=0
 while [ $hours -lt 24 ]
 do
   echo "Hour: $hours"
-  for minutes in {1..59}
+
+  minutes=1
+  while [ $minutes -lt 60 ]
   do
     echo "$minutes"
+    minutes=$((minutes+1))
   done
+
   hours=$((hours+1))
 done
