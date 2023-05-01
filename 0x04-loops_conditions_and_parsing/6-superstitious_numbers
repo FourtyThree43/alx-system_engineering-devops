@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# This script is displaying numbers from 1 to 20, with a special case on the 4th, 9th and 17th iteration.
+msg1="bad luck from China"
+msg2="bad luck from Japan"
+msg3="bad luck from Italy"
+count=1
+
+while [ $count -le 20 ]
+do
+  case $count in
+    4)
+      echo -e "$count\n$msg1"
+      ;;
+    9)
+      echo -e "$count\n$msg2"
+      ;;
+    17)
+      echo -e "$count\n$msg3"
+      ;;
+    *)
+      echo $count
+      ;;
+  esac
+
+  count=$((count+1))
+done

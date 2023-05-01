@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# This script is displaying "Best School" 10 times, with a special case on the 4th and 8th iteration.
+msg="Best School"
+msg1="bad luck"
+msg2="good luck"
+count=0
+
+while [ $count -lt 10 ]
+do
+  if [ $count -eq 3 ]
+  then
+    echo -e "$msg1"
+  elif [ $count -eq 7 ]
+  then
+    echo -e "$msg2"
+  else
+    echo "$msg"
+  fi
+
+  count=$((count+1))
+done
