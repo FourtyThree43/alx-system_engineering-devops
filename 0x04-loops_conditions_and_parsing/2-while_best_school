@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# This script is displaying "Best School" 10 times
+msg="Best School"
+count=0
+
+while [ $count -lt 10 ]
+do
+  echo "$msg"
+  count=$((count+1))
+done
