@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Intall and config Nginx in our remote server.
+
+# Update package lists and install Nginx.
+apt update
+apt install -y nginx
+
+# Configure Nginx.
+echo "Hello World!" > tee /var/www/html/index.html
+
+# Start Nginx service.
+service nginx start
