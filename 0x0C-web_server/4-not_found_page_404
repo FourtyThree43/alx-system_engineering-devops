@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Intall and config Nginx in our remote server.
+
+# Install Nginx if not already installed
+if ! [ -x "$(command -v nginx)" ]; then
+  apt-get update
+  apt-get install -y nginx
+fi
+
+# Create a custom 404 HTML page
+echo "Ceci n'est pas une page" | tee /var/www/html/404.html
+
+# Modify the Nginx default server configuration
+sed -i '/listen 80 default_server;/a \
+        error_page 404 /404.html;\n \
+        location = /404.html {\n \
+            root /var/www/html;\n \
+        }' /etc/nginx/sites-available/default
+
+# Restart Nginx
+service nginx restart
