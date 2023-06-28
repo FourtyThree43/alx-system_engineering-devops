@@ -8,14 +8,21 @@ if ! [ -x "$(command -v nginx)" ]; then
 fi
 
 # Create a custom 404 HTML page
-echo "Ceci n'est pas une page" | tee /var/www/html/404.html
+echo "Ceci n'est pas une page" | sudo tee /var/www/html/404.html
 
-# Modify the Nginx default server configuration
-sed -i '/listen 80 default_server;/a \
-        error_page 404 /404.html;\n \
-        location = /404.html {\n \
-            root /var/www/html;\n \
-        }' /etc/nginx/sites-available/default
+# Check if custom configuration already exists in Nginx server configuration
+if ! grep -q "error_page 404 /404.html;" /etc/nginx/sites-available/default; then
+  # Modify the Nginx default server configuration
+  sed -i '/listen 80 default_server;/a \
+          error_page 404 /404.html;\n \
+          location = /404.html {\n \
+              root /var/www/html;\n \
+          }' /etc/nginx/sites-available/default
 
-# Restart Nginx
-service nginx restart
+  # Restart Nginx
+  service nginx restart
+else
+  echo "Custom configuration already exists. Skipping..."
+  # Restart Nginx
+  service nginx restart
+fi
