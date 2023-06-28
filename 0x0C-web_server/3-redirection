@@ -11,5 +11,5 @@ fi
 echo "Hello World!" | sudo tee /var/www/html/index.html
 sudo sed -i "/server_name _;/a \    location /redirect_me {\n        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;\n    }" /etc/nginx/sites-available/default
 
-# Start Nginx service
-service nginx start
+# Restart Nginx service
+service nginx restart
