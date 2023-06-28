@@ -22,7 +22,7 @@ if ! grep -q "error_page 404 /404.html;" /etc/nginx/sites-available/default; the
   # Restart Nginx
   service nginx restart
 else
-  echo "Custom configuration already exists. Skipping..."
+  # echo "Custom configuration already exists. Skipping..."
   # Restart Nginx
   service nginx restart
 fi

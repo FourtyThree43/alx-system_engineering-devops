@@ -21,5 +21,8 @@ if ! grep -q "location /redirect_me" /etc/nginx/sites-available/default; then
 	# Restart Nginx service.
 	service nginx restart
 else
-  echo "Config already exists. Skipping..."
+  # echo "Config already exists. Skipping..."
+
+	# Restart Nginx
+  service nginx restart
 fi
