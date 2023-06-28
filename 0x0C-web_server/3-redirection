@@ -1,28 +1,15 @@
 #!/usr/bin/env bash
-# Intall and config Nginx in our remote server.
+# Install and configure Nginx on the remote server
 
-# Update package lists and install Nginx if not installed.
+# Update package lists and install Nginx if not installed
 if ! [ -x "$(command -v nginx)" ]; then
-	apt-get update
-	apt-get install -y nginx
+  apt-get update
+  apt-get install -y nginx
 fi
 
-# Create a custom index HTML page.
+# Configure Nginx
 echo "Hello World!" | sudo tee /var/www/html/index.html
+sudo sed -i "/server_name _;/a \    location /redirect_me {\n        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;\n    }" /etc/nginx/sites-available/default
 
-# Check if configuration already exists in Nginx server configuration
-# if ! grep -q "location /redirect_me" /etc/nginx/sites-available/default; then
-	# Create the redirection configuration file
-	sudo sed -i '/server_name _;/a \
-													location /redirect_me {\n \
-														return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;\n \
-													}' /etc/nginx/sites-available/default
-
-	# Restart Nginx service.
-	service nginx restart
-# else
-#   # echo "Config already exists. Skipping..."
-
-# 	# Restart Nginx
-#   service nginx restart
-# fi
+# Start Nginx service
+service nginx start
