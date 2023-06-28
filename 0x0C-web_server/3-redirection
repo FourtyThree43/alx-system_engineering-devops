@@ -3,13 +3,15 @@
 
 # Update package lists and install Nginx if not installed.
 if ! [ -x "$(command -v nginx)" ]; then
-	apt update
-	apt install -y nginx
+	sudo apt update
+	sudo apt install -y nginx
 fi
 
 # Configure Nginx.
 echo "Hello World!" | sudo tee /var/www/html/index.html
+
+# Create the redirection configuration file
 sudo sed -i '/server_name _;/a \location /redirect_me {\n return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;\n}' /etc/nginx/sites-available/default
 
-# Start Nginx service.
-service nginx start
+# Restart Nginx service.
+service nginx restart
