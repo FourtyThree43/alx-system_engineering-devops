@@ -29,7 +29,7 @@ class nginx {
   file { '/var/www/html/404.html':
     ensure  => present,
     content => 'Ceci n\'est pas une page',
-    require => Package['nginx'],
+    require => Class['nginx'],
   }
 
   # Configure Nginx server block
@@ -50,6 +50,10 @@ class nginx {
         error_page 404 /404.html;
         location = /404.html {
           return 404 'Ceci n\'est pas une page';
+        }
+
+        location / {
+          try_files $uri $uri/ =404;
         }
       }
     ",
