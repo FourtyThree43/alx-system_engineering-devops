@@ -11,7 +11,7 @@ fi
 echo "Hello World!" | sudo tee /var/www/html/index.html
 
 # Check if configuration already exists in Nginx server configuration
-if ! grep -q "location /redirect_me" /etc/nginx/sites-available/default; then
+# if ! grep -q "location /redirect_me" /etc/nginx/sites-available/default; then
 	# Create the redirection configuration file
 	sudo sed -i '/server_name _;/a \
 													location /redirect_me {\n \
@@ -20,9 +20,9 @@ if ! grep -q "location /redirect_me" /etc/nginx/sites-available/default; then
 
 	# Restart Nginx service.
 	service nginx restart
-else
-  # echo "Config already exists. Skipping..."
+# else
+#   # echo "Config already exists. Skipping..."
 
-	# Restart Nginx
-  service nginx restart
-fi
+# 	# Restart Nginx
+#   service nginx restart
+# fi
