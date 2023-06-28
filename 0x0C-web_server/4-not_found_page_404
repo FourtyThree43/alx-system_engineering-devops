@@ -13,11 +13,11 @@ echo "Ceci n'est pas une page" | sudo tee /var/www/html/404.html
 # Check if custom configuration already exists in Nginx server configuration
 if ! grep -q "error_page 404 /404.html;" /etc/nginx/sites-available/default; then
   # Modify the Nginx default server configuration
-  sed -i '/listen 80 default_server;/a \
+  sed -i '/server_name _;/a \
           error_page 404 /404.html;\n \
           location = /404.html {\n \
               root /var/www/html;\n \
-          }' /etc/nginx/sites-available/default
+          }\n' /etc/nginx/sites-available/default
 
   # Restart Nginx
   service nginx restart
