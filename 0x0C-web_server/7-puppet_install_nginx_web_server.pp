@@ -25,13 +25,6 @@ class nginx {
     require => Package['nginx'],
   }
 
-  # Create custom 404 HTML page
-  file { '/var/www/html/404.html':
-    ensure  => present,
-    content => 'Ceci n\'est pas une page',
-    require => Class['nginx'],
-  }
-
   # Configure Nginx server block
   file { '/etc/nginx/sites-available/default':
     ensure  => present,
@@ -45,11 +38,6 @@ class nginx {
 
         location /redirect_me {
           return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
-        }
-
-        error_page 404 /404.html;
-        location = /404.html {
-          return 404 'Ceci n\'est pas une page';
         }
 
         location / {
