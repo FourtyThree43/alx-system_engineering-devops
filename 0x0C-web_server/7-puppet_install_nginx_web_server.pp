@@ -1,6 +1,6 @@
 # Class: nginx
 #
-# This class installs and configures the Nginx web server.
+# This class installs and configures Nginx web server.
 #
 # Parameters:
 #   None
@@ -32,10 +32,10 @@ class nginx {
     require => Package['nginx'],
   }
 
-  # Configure Nginx server block with custom 404 page
+  # Configure Nginx server block
   file { '/etc/nginx/sites-available/default':
     ensure  => present,
-    content => @("EOF"
+    content => "
       server {
         listen 80 default_server;
         listen [::]:80 default_server;
@@ -52,12 +52,11 @@ class nginx {
           return 404 'Ceci n\'est pas une page';
         }
       }
-    EOF
-    ),
+    ",
     require => Package['nginx'],
     notify  => Service['nginx'],
   }
 }
 
-# Apply the nginx class
+# Apply nginx class
 include nginx
