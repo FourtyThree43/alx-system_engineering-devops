@@ -1,4 +1,4 @@
-#!/usr/bin/env bash#!/bin/bash
+#!/usr/bin/env bash
 # Configure Nginx so that its HTTP response contains a custom header (on web-01 and web-02)
 
 # Install Nginx if not already installed
@@ -7,50 +7,11 @@ if ! [ -x "$(command -v nginx)" ]; then
   apt-get install -y nginx
 fi
 
-# Replace Nginx default configuration
-cp /etc/nginx/nginx.conf /etc/nginx/nginx.conf.bak
-cat > /etc/nginx/nginx.conf <<EOF
-user www-data;
-worker_processes auto;
-pid /run/nginx.pid;
-include /etc/nginx/modules-enabled/*.conf;
+# backup default server config file
+sudo cp /etc/nginx/sites-enabled/default nginx-sites-enabled_default.backup
 
-events {
-  worker_connections 768;
-}
-
-http {
-  sendfile on;
-  tcp_nopush on;
-  tcp_nodelay on;
-  keepalive_timeout 65;
-  types_hash_max_size 2048;
-  include /etc/nginx/mime.types;
-  default_type application/octet-stream;
-
-  access_log /var/log/nginx/access.log;
-  error_log /var/log/nginx/error.log;
-
-  gzip on;
-
-  include /etc/nginx/conf.d/*.conf;
-  include /etc/nginx/sites-enabled/*;
-}
-EOF
-
-# Create a custom Nginx configuration file
-cat > /etc/nginx/conf.d/custom_header.conf <<EOF
-server {
-  listen 80 default_server;
-  listen [::]:80 default_server;
-  server_name _;
-  location / {
-    add_header X-Served-By \$hostname;
-    root /var/www/html;
-    index index.html;
-  }
-}
-EOF
+sed -i '/server_name _;/a \
+        add_header X-Served-By \$hostname;\n' /etc/nginx/sites-available/default
 
 # Restart Nginx service
 service nginx restart
