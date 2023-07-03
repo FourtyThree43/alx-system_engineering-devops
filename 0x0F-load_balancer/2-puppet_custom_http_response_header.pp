@@ -12,7 +12,7 @@ file { '/etc/nginx/nginx.conf':
 }
 
 # Create a custom Nginx configuration file
-file { '/etc/nginx/conf.d/custom_header.conf':
+file { '/etc/nginx/sites-enabled/default':
   ensure  => file,
   content => 'server {
                 listen 80 default_server;
@@ -33,5 +33,5 @@ service { 'nginx':
   ensure    => running,
   enable    => true,
   require   => Package['nginx'],
-  subscribe => File['/etc/nginx/nginx.conf', '/etc/nginx/conf.d/custom_header.conf'],
+  subscribe => File['/etc/nginx/nginx.conf', '/etc/nginx/sites-enabled/default'],
 }
