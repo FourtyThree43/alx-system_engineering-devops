@@ -4,9 +4,9 @@
 print_subdomain_info() {
     local domain="$1"
     local subdomain="$2"
-    dig_output=$(dig "$subdomain.$domain")
+    dig_output=$(dig "$domain")
     answer_section=$(echo "$dig_output" | grep -A1 'ANSWER SECTION:')
-    modified_output=$(echo "$answer_section" | sed -r "s/$subdomain\.$domain./$subdomain./g")
+    modified_output=$(echo "$answer_section" | sed -r "s/$domain./$subdomain/g")
     awk_output=$(echo "$modified_output" | awk -F" " ' NR==2 { print "The subdomain " $1 " is a " $4 " record and points to " $5 }')
     echo "$awk_output"
 }
@@ -18,7 +18,7 @@ if [[ $# -eq 1 ]]; then
   print_subdomain_info "$1" "web-02"
 elif [[ $# -eq 2 ]]; then
   print_subdomain_info "$1" "$2"
-else
-  echo "Usage: $0 <domain> [subdomain]"
-  exit 1
+# else
+#   echo "Usage: $0 <domain> [subdomain]"
+#   exit 1
 fi
