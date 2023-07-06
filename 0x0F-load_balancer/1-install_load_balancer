@@ -1,43 +1,70 @@
 #!/usr/bin/env bash
 # Install and configure HAproxy on your lb-01 server.
 
-# Install HAproxy if not already installed
-if ! [ -x "$(command -v nginx)" ]; then
-  apt-get update
-  apt-get install -y haproxy
-fi
+install_haproxy() {
+  if ! [ -x "$(command -v haproxy)" ]; then
+    apt-get update -qq
+    apt-get install -y haproxy -qq
+  fi
+}
 
-# backup default server config file
-sudo cp /etc/haproxy/haproxy.cfg haproxy_default.backup
+configure_haproxy() {
+  sudo mv /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.backup
+  sudo touch /etc/haproxy/haproxy.cfg
 
+  local server_config="
+  global
+      log /dev/log local0
+      log /dev/log local1 notice
+      chroot /var/lib/haproxy
+      stats socket /run/haproxy/admin.sock mode 660 level admin
+      stats timeout 30s
+      user haproxy
+      group haproxy
+      daemon
 
-server_config=\
-"
-defaults
-  mode http
-  timeout client 15s
-  timeout connect 10s
-  timeout server 15s
-  timeout http-request 10s
+  defaults
+      log global
+      mode http
+      option httplog
+      option dontlognull
+      timeout connect 5000
+      timeout client 50000
+      timeout server 50000
+      timeout http-request 50000
 
-frontend clickviral-tech-frontend
-    bind *:80
-    default_backend clickviral-tech-backend
+  frontend FT43-tech-frontend
+      bind *:80
+      default_backend FT43-tech-servers
 
-backend clickviral-tech-backend
-    balance roundrobin
-    server 195416-web-01 54.160.120.200:80 check
-    server 195416-web-02 54.145.155.255:80 check
-"
+  backend FT43-tech-servers-backend
+      balance roundrobin
+      server 195416-web-01 54.160.120.200:80 check
+      server 195416-web-02 54.145.155.255:80 check
+  "
 
-# shellcheck disable=SC2154
-echo "$server_config" | sudo dd status=none of=/etc/haproxy/haproxy.cfg
+  echo "$server_config" | sudo tee /etc/haproxy/haproxy.cfg >/dev/null
+}
 
-# enable haproxy to be started by init script
-echo "ENABLED=1" | sudo dd status=none of=/etc/default/haproxy
+enable_haproxy_init() {
+  sudo sed -i 's/ENABLED=0/ENABLED=1/' /etc/default/haproxy
+}
 
-if [ "$(pgrep -c haproxy)" -le 0 ]; then
-	sudo service haproxy start
-else
-	sudo service haproxy restart
-fi
+start_haproxy() {
+  sudo service haproxy start
+}
+
+verify_haproxy_status() {
+  if sudo service haproxy status | grep -q "active (running)"; then
+    echo "HAProxy is running."
+  else
+    echo "HAProxy is not running."
+  fi
+}
+
+# Main script execution
+install_haproxy
+configure_haproxy
+enable_haproxy_init
+start_haproxy
+verify_haproxy_status
