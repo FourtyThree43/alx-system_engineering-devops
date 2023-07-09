@@ -11,7 +11,7 @@ install_packages() {
 		if ! command -v "$package" &>/dev/null; then
 			echo "Installing package: $package"
 			sudo apt-get update -qq
-			sudo apt-get install -y "$package" -qq
+			sudo apt-get -qq install -y "$package"
 		else
 			echo "Package $package is already installed"
 		fi
@@ -24,14 +24,22 @@ configure_certbot() {
 
     echo "Configuring Certbot for domains: ${domains[*]}"
 
+    # Check if Certbot is already running and stop it
+    if pgrep -f "certbot" &>/dev/null; then
+        echo "Stopping existing Certbot instance"
+        sudo pkill -f "certbot"
+        sleep 5  # Wait for Certbot process to stop gracefully
+    fi
+
+    # Configure Certbot and obtain SSL certificate
     sudo certbot certonly --standalone ${domains[@]/#/-d }
 }
 
 # Create or recreate the symbolic link
 recreate_symbolic_link() {
 	local cert_dir="/etc/haproxy/certs"
-	local cert_file="/etc/haproxy/certs/www.fourtythree43.tech.pem"
-	local symbolic_link="/etc/letsencrypt/live/fourtythree43.tech/fullchain.pem"
+	local symbolic_link="/etc/haproxy/certs/www.fourtythree43.tech.pem"
+	local cert_file="/etc/letsencrypt/live/fourtythree43.tech/fullchain.pem"
 
 	if [ ! -d "$cert_dir" ]; then
 		sudo mkdir -p "$cert_dir"
@@ -72,6 +80,17 @@ configure_haproxy() {
         # Default SSL material locations
         ca-base /etc/ssl/certs
         crt-base /etc/ssl/private
+
+        # Default ciphers to use on SSL-enabled listening sockets.
+        # For more information, see ciphers(1SSL). This list is from:
+        #  https://hynek.me/articles/hardening-your-web-servers-ssl-ciphers/
+        # ssl-default-bind-options ssl-min-ver TLSv1.2 prefer-client-ciphers
+        # ssl-default-bind-ciphersuites TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256
+        # ssl-default-bind-ciphers ECDH+AESGCM:ECDH+CHACHA20:ECDH+AES256:ECDH+AES128:!aNULL:!SHA1:!AESCCM
+        # ssl-default-server-options ssl-min-ver TLSv1.2
+        # ssl-default-server-ciphersuites TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256
+        # ssl-default-server-ciphers ECDH+AESGCM:ECDH+CHACHA20:ECDH+AES256:ECDH+AES128:!aNULL:!SHA1:!AESCCM
+        # tune.ssl.default-dh-param 2048
 
         # See: https://ssl-config.mozilla.org/#server=haproxy&server-version=2.0.3&config=intermediate
         ssl-default-bind-ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384
