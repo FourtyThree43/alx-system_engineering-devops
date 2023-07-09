@@ -20,7 +20,11 @@ install_packages() {
 
 # Configure Certbot and obtain SSL certificate
 configure_certbot() {
-    sudo certbot certonly --standalone -d fourtythree43.tech -d www.fourtythree43.tech
+    local domains=("fourtythree43.tech" "www.fourtythree43.tech")  # Replace with your own domain names
+
+    echo "Configuring Certbot for domains: ${domains[*]}"
+
+    sudo certbot certonly --standalone ${domains[@]/#/-d }
 }
 
 # Create or recreate the symbolic link
