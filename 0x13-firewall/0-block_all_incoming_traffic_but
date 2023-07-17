@@ -33,4 +33,4 @@ sudo ufw show added
 sudo ufw enable
 
 # Display UFW status and rules
-sudo ufw status
+sudo ufw status verbose
