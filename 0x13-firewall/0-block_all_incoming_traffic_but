@@ -15,14 +15,19 @@ sudo ufw default deny incoming
 sudo ufw default allow outgoing
 
 # Check which profiles are currently registered in UFW
-sudo ufw app list
+# sudo ufw app list
 
 # Allow SSH by Port Number (OpenSSH service)
+# sudo ufw allow OpenSSH
 sudo ufw allow 22/tcp
 
 # Allow HTTPS (port 443) and HTTP (port 80) traffic
+# sudo ufw allow 'Nginx Full'
 sudo ufw allow 443/tcp
 sudo ufw allow 80/tcp
+
+# Verify which rules were added
+sudo ufw show added
 
 # Enable UFW
 sudo ufw enable
