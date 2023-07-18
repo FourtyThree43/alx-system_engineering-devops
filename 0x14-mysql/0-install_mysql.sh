@@ -12,6 +12,7 @@ fi
 install_mysql() {
 	# Add the MySQL APT repository
 	echo "Downloading the GPG key from the public keyserver..."
+	gpg --import signature.key
 	gpg --recv-keys 467B942D3A79BD29
 	apt-key add ~/.gnupg/pubring.kbx
 
@@ -24,10 +25,10 @@ install_mysql() {
 	apt-get update
 
 	# Check the available MySQL Server 5.7 versions and use grep to filter the desired version
-	desired_version=$(sudo apt-cache policy mysql-server | grep -oP '5\.7\.\d+')
+	desired_version=$(sudo apt-cache policy mysql-server | grep -oP '5\.7\.\d+-\d+ubuntu\d+\.\d+')
 
 	# Install the desired version of MySQL Server 5.7.x
-	apt-get install mysql-client="$desired_version" mysql-community-server="$desired_version" mysql-server="$desired_version"
+	apt-get install -yyy mysql-client="$desired_version" mysql-community-server="$desired_version" mysql-server="$desired_version"
 
 	# Optional: Secure MySQL installation (uncomment the following lines if needed)
 	# mysql_secure_installation
