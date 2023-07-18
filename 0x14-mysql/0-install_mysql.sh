@@ -11,20 +11,28 @@ fi
 # Function to install MySQL
 install_mysql() {
 	# Add the MySQL APT repository
-	apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 5072E1F5
-	echo "deb http://repo.mysql.com/apt/ubuntu $(lsb_release -sc) mysql-5.7" | tee /etc/apt/sources.list.d/mysql.list
+	echo "Downloading the GPG key from the public keyserver..."
+	gpg --recv-keys 467B942D3A79BD29
+	apt-key add ~/.gnupg/pubring.kbx
+
+	# Check if the MySQL 5.7 repository already exists
+	if ! grep -q "deb http://repo.mysql.com/apt/ubuntu bionic mysql-5.7" /etc/apt/sources.list.d/mysql.list; then
+	  sudo sh -c 'echo "deb http://repo.mysql.com/apt/ubuntu bionic mysql-5.7" >> /etc/apt/sources.list.d/mysql.list'
+	fi
 
 	# Update package list and install MySQL Server
 	apt-get update
-	apt-get install -y mysql-server-5.7
 
-	# Set root password
-	mysql -uroot -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root'; FLUSH PRIVILEGES;"
+	# Check the available MySQL Server 5.7 versions and use grep to filter the desired version
+	desired_version=$(sudo apt-cache policy mysql-server | grep -oP '5\.7\.\d+')
 
-	# Optional: Secure MySQL installation (un/comment the following lines if needed)
-	mysql_secure_installation
+	# Install the desired version of MySQL Server 5.7.x
+	apt-get install mysql-client="$desired_version" mysql-community-server="$desired_version" mysql-server="$desired_version"
 
-	echo "MySQL 5.7.x installed successfully."
+	# Optional: Secure MySQL installation (uncomment the following lines if needed)
+	# mysql_secure_installation
+
+	echo "MySQL $desired_version installed successfully."
 }
 
 # Call the install_mysql function
