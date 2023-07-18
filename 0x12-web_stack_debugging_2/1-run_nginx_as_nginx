@@ -1,4 +1,17 @@
 #!/usr/bin/env bash
 # Fix this container so that Nginx is running as the nginx user.
+
+# Step 1: Change the user in the nginx configuration file
+sed -i 's/#user www-data/user nginx/' /etc/nginx/nginx.conf
+
+# Step 2: Edit the default site configuration file to listen on port 8080
+sed -i 's/80/8080/g' /etc/nginx/sites-available/default
+
+# Step 3: Set the correct permissions for the nginx configuration file
+chmod 644 /etc/nginx/nginx.conf
+
+# Step 4: Kill apache2 as it is using port 8080
 pkill apache2
 
+# Step 5: (Optional) Restart Nginx service to apply changes
+service nginx restart
