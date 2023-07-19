@@ -11,8 +11,10 @@ fi
 # Function to install MySQL
 install_mysql() {
 	# Add the MySQL APT repository
+	# Get key: https://dev.mysql.com/doc/refman/5.7/en/checking-gpg-signature.html
+	# and save to file: 0-mysql_pubkey.asc
 	echo "Downloading the GPG key from the public keyserver..."
-	gpg --import mysql_pubkey.asc
+	gpg --import 0-mysql_pubkey.asc
 	apt-key add ~/.gnupg/pubring.kbx
 
 	# Check if the MySQL 5.7 repository already exists
