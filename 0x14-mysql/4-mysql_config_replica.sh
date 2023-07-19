@@ -33,3 +33,12 @@ EOF
         echo "Failed to restart MySQL. Please check the MySQL error logs for more details."
     fi
 fi
+
+# check if port 3306 is allowed using ufw
+if ! ufw status | grep -q "3306"; then
+    # Port 3306 is not allowed, enable it using ufw
+    echo "Port 3306 is not allowed. Enabling port 3306 for MySQL..."
+    ufw allow 3306
+else
+    echo "Port 3306 is already allowed."
+fi

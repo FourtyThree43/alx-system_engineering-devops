@@ -10,7 +10,7 @@ fi
 
 # Check if a SQL script file is provided as an argument
 if [[ $# -ne 1 ]]; then
-	echo "Usage: $0 <sql_script>"
+	echo "Usage: $0 <user> <sql_script>"
 	exit 1
 fi
 
