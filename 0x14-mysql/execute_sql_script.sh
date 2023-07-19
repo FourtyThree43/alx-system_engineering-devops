@@ -23,13 +23,21 @@ fi
 
 # Function to execute the SQL script to set up replication user and grant privileges
 execute_sql_script() {
-	# Set MySQL root password (modify it accordingly if not 'root')
-	MYSQL_ROOT_PASS='root'
+    local user="$1"
+    local mysql_pass=
 
-	# Execute the SQL script using the MySQL client
-	mysql -uroot -p"${MYSQL_ROOT_PASS}" <"$sql_script"
+    # Set the MySQL password based on the specified user
+    if [[ "$user" == "root" ]]; then
+        mysql_pass='root'
+    elif [[ "$user" == "holberton_user" ]]; then
+        mysql_pass='projectcorrection280hbtn'
+    else
+        echo "Error: Invalid user. Supported users: root or holberton_user."
+        exit 1
+    fi
 
-	echo -e "Done.\n"
+    # Execute the SQL script using the MySQL client
+    mysql -u"$user" -p"$mysql_pass" <"$sql_script"
 }
 
 # Call the setup_replication_user function
