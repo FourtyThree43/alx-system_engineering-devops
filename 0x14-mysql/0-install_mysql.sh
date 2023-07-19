@@ -12,13 +12,12 @@ fi
 install_mysql() {
 	# Add the MySQL APT repository
 	echo "Downloading the GPG key from the public keyserver..."
-	gpg --import signature.key
-	gpg --recv-keys 467B942D3A79BD29
+	gpg --import mysql_pubkey.asc
 	apt-key add ~/.gnupg/pubring.kbx
 
 	# Check if the MySQL 5.7 repository already exists
 	if ! grep -q "deb http://repo.mysql.com/apt/ubuntu bionic mysql-5.7" /etc/apt/sources.list.d/mysql.list; then
-	  sudo sh -c 'echo "deb http://repo.mysql.com/apt/ubuntu bionic mysql-5.7" >> /etc/apt/sources.list.d/mysql.list'
+		sudo sh -c 'echo "deb http://repo.mysql.com/apt/ubuntu bionic mysql-5.7" >> /etc/apt/sources.list.d/mysql.list'
 	fi
 
 	# Update package list and install MySQL Server

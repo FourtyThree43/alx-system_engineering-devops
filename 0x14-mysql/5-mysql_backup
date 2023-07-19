@@ -1,4 +1,39 @@
 #!/usr/bin/env bash
-# MySQL backup
-mysqldump -u root -p"$1" --opt --all-databases > backup.sql
-tar -zcvf $(date +%d-%m-%Y).tar.gz backup.sql
+# Script: 5-mysql_backup
+# Description: Performs MySQL backup and compresses the backup file.
+
+# Check if a MySQL Root password is provided as an argument
+check_args() {
+	if [[ $# -ne 1 ]]; then
+		echo "Usage: $0 <root_password>"
+		exit 1
+	fi
+}
+
+# Function to perform MySQL backup
+perform_backup() {
+    mysqldump -u root -p"$1" --opt --all-databases > backup.sql
+}
+
+# Function to compress the backup file and add timestamp to tarball filename
+compress_backup() {
+    local timestamp=$(date +%d-%m-%Y)
+    tar -zcf "backup_$timestamp.tar.gz" backup.sql
+}
+
+# Main function
+main() {
+    # Check if a MySQL root password is provided as an argument
+    check_args "$@"
+
+    # Perform MySQL backup
+    perform_backup "$1"
+
+    # Compress the backup with timestamp in the filename
+    compress_backup
+
+    echo "MySQL backup completed successfully!"
+}
+
+# Call the main function
+main "$@"

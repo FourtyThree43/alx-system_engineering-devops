@@ -18,4 +18,3 @@ GRANT SELECT ON tyrell_corp.nexus6 TO 'holberton_user'@'localhost';
 
 -- Make sure the table contains data
 SELECT * FROM nexus6;
-
