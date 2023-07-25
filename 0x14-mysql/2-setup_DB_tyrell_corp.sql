@@ -7,7 +7,7 @@ USE tyrell_corp;
 -- Create the table nexus6
 CREATE TABLE IF NOT EXISTS nexus6 (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(255)
+  name VARCHAR(255) NOT NULL
 );
 
 -- Insert at least one entry into the nexus6 table
