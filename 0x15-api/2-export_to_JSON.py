@@ -36,7 +36,7 @@ def export_to_json(employee_id):
             {
                 "task": task.get("title"),
                 "completed": task.get("completed"),
-                "username": employee_name,
+                "username": employee_name
             }
         )
 

@@ -32,9 +32,9 @@ def export_all_tasks_to_JSON():
         task_data_list = []
         for task in todos_response.json():
             task_data_list.append({
+                "username": employee_name,
                 "task": task.get("title"),
-                "completed": task.get("completed"),
-                "username": employee_name
+                "completed": task.get("completed")
             })
 
         users_list[user_id] = task_data_list
