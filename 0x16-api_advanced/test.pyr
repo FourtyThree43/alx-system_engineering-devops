@@ -1,0 +1,5 @@
+requests.get('https://jsonplaceholder.typicode.com/albums')
+requests.post('https://jsonplaceholder.typicode.com/albums')
+
+post('https://jsonplaceholder.typicode.com/posts')  # 'requests.' prefix is optional
+get('jsonplaceholder.typicode.com/posts')  # as is the URL scheme
