@@ -12,7 +12,7 @@ func numberOfSubscribers(subreddit string) int {
 	client := &http.Client{}
 
 	url := fmt.Sprintf("https://www.reddit.com/r/%s/about.json", subreddit)
-	req, err:= http.NewRequest("Get", url, nil)
+	req, err := http.NewRequest("GET", url, nil)
 
 	if err != nil {
 		return 0
@@ -28,8 +28,17 @@ func numberOfSubscribers(subreddit string) int {
 	defer resp.Body.Close()
 
 	if resp.StatusCode == http.StatusOK {
-		//
-		return int(subscribers)
+		var data map[string]interface{}
+
+		if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
+			return 0
+		}
+
+		if result, ok := data["data"].(map[string]interface{}); ok {
+			if subscribers, ok := result["subscribers"].(float64); ok {
+				return int(subscribers)
+			}
+		}
 	}
 
 	return 0
@@ -41,6 +50,5 @@ func main() {
 	}
 	subredditName := os.Args[1]
 	subscribersCount := numberOfSubscribers(subredditName)
-	fmt.Println("%d", subscribersCount)
-
+	fmt.Printf("%d\n", subscribersCount)
 }
