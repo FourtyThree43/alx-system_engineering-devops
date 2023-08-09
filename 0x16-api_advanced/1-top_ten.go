@@ -1,18 +1,19 @@
 package main
 
-import (
+import(
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
 )
 
-func numberOfSubscribers(subreddit string) int {
+func topTen(subreddit string){
 	url := fmt.Sprintf("https://www.reddit.com/r/%s/about.json", subreddit)
 	req, err := http.NewRequest("GET", url, nil)
 
 	if err != nil {
-		return 0
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
 	}
 
 	client := &http.Client{}
@@ -20,7 +21,8 @@ func numberOfSubscribers(subreddit string) int {
 	resp, err := client.Do(req)
 
 	if err != nil {
-		return 0
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
 	}
 
 	defer resp.Body.Close()
@@ -29,27 +31,29 @@ func numberOfSubscribers(subreddit string) int {
 		var data map[string]interface{}
 
 		if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
-			return 0
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
 		}
 
-		if result, ok := data["data"].(map[string]interface{}); ok {
-			if subscribers, ok := result["subscribers"].(float64); ok {
-				return int(subscribers)
-			}
+		posts := data["data"].(map[string]interface{})["children"].([]interface{})
+
+		for _, post := range posts {
+			postData := post.(map[string]interface{})["data"].(map[string]interface{})
+			title := postData["title"].(string)
+			fmt.Println(title)
 		}
+	} else {
+		fmt.Println("Invalid subreddit")
 	}
-
-	return 0
 }
 
 
 func main() {
 	if len(os.Args) != 2 {
-		fmt.Fprintln(os.Stderr, "Please pass an argument for the subreddit to search.")
+		fmt.Fprintln(os.Stderr, "Please pass an argument for the subreddit to search")
 		os.Exit(1)
 	}
 
 	subredditName := os.Args[1]
-	subscribersCount := numberOfSubscribers(subredditName)
-	fmt.Printf("%d\n", subscribersCount)
+	topTen(subredditName)
 }

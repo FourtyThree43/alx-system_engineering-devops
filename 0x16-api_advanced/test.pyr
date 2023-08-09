@@ -6,3 +6,5 @@ get('jsonplaceholder.typicode.com/posts')  # as is the URL scheme
 
 
 get('www.reddit.com/r/programming/about.json')
+
+get('www.reddit.com/r/programming/hot.json?limit=10')
