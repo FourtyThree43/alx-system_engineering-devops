@@ -65,7 +65,7 @@ server {
 
 	# Configure /2-hbnb route of AirBnB_clone_v4 as root location
 	location / {
-		proxy_pass http://127.0.0.1:5003;
+		proxy_pass http://127.0.0.1:5003/2-hbnb;
 	}
 
 	# Serves the static assets for AirBnB_clone_v4
