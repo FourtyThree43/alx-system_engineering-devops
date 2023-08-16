@@ -1,3 +1,7 @@
+[Unit]
+Description=Gunicorn instance to serve 2-hbnb
+After=network.target
+
 [Service]
 User=ubuntu
 Group=ubuntu
