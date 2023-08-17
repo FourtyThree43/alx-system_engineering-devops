@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Find the PIDs of running Gunicorn processes and send HUP signal for graceful reload.
+pgrep gunicorn | xargs | cut -d ' ' -f 1 | xargs kill -HUP
+

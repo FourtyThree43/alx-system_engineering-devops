@@ -1,15 +1,20 @@
-[Unit]
-Description=Gunicorn instance to serve 2-hbnb
-After=network.target
+# /etc/init/web_dynamic_2-hbnb.conf
 
-[Service]
-User=ubuntu
-Group=ubuntu
-WorkingDirectory=/home/ubuntu/AirBnB_clone_v4/
-ExecStart=/bin/gunicorn -b 0.0.0.0:5003 -w 3 -t 120 --error-logfile /tmp/airbnb-error.log --access-logfile /tmp/airbnb-access.log web_dynamic.2-hbnb:app
-ExecReload=/bin/kill -s HUP $MAINPID
-ExecStop=/bin/kill -s TERM $MAINPID
-PrivateTmp=true
+description "Gunicorn instance to serve 2-hbnb"
 
-[Install]
-WantedBy=multi-user.target
+start on runlevel [2345]
+stop on runlevel [!2345]
+
+respawn
+
+setuid ubuntu
+setgid www-data
+
+chdir /home/ubuntu/AirBnB_clone_v4
+
+env HBNB_ERROR_LOGFILE=/tmp/airbnb-error.log
+env HBNB_ACCESS_LOGFILE=/tmp/airbnb-access.log
+
+script
+    exec /usr/bin/gunicorn --workers 3 --bind 0.0.0.0:5003 --error-logfile $HBNB_ERROR_LOGFILE --access-logfile $HBNB_ACCESS_LOGFILE web_dynamic.2-hbnb:app
+end script
