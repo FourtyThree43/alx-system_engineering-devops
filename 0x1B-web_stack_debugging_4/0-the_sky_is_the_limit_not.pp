@@ -8,18 +8,17 @@ class nginx_ulimit {
 
   # Define the exec resource to update the ulimit and restart Nginx
   exec { 'update_ulimit_and_restart_nginx':
-    command     => "/bin/sed -i 's/^ULIMIT=.*/ULIMIT=\"$ulimit_value\"/' /etc/default/nginx",
-    path        => '/bin:/usr/bin',
-    refreshonly => true,
+    provider => shell,
+    command  => "sudo sed -i 's/^ULIMIT=.*/ULIMIT=\"$ulimit_value\"/' /etc/default/nginx",
     before   => Exec['restart'],
   }
 
   exec {'restart':
-    provider => shell,
-    command  => 'sudo service nginx restart',
+    provider    => shell,
+    command     => 'sudo service nginx restart',
+    subscribe   => Service['nginx'],
   }
 
-  # Define a service resource to manage Nginx
   service { 'nginx':
     ensure    => running,
     enable    => true,
