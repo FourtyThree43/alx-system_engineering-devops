@@ -3,14 +3,13 @@
 
 $ulimit_value = '-n 4096'
 
-# Define the exec resource to update the ulimit and restart Nginx
-exec { 'update_ulimit_and_restart_nginx':
+exec { 'update_ulimit':
   provider => shell,
   command  => "sudo sed -i 's/^ULIMIT=.*/ULIMIT=\"${ulimit_value}\"/' /etc/default/nginx",
-  before   => Exec['restart'],
+  before   => Exec['restart_nginx'],
 }
 
-exec {'restart':
+exec {'restart_nginx':
   provider  => shell,
   command   => 'sudo service nginx restart',
   subscribe => Service['nginx'],
