@@ -12,4 +12,4 @@ setgid www-data
 
 chdir /home/ubuntu/AirBnB_clone_v4
 
-exec /usr/bin/gunicorn --workers 3 --bind 0.0.0.0:5003 --error-logfile /tmp/airbnb-error.log --access-logfile /tmp/airbnb-access.log web_dynamic.2-hbnb:app
+exec gunicorn --workers 3 --bind 0.0.0.0:5003 web_dynamic.2-hbnb:app >> /tmp/airbnb-access.log 2> /tmp/airbnb-error.logirbnb-access.log
